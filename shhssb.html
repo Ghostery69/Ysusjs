@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code d'accès</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: url('https://i.ibb.co/kXJsCwJ/image.jpg') no-repeat center center fixed;
+      background-size: cover;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+    }
+
+    .container {
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 40px;
+      border-radius: 10px;
+      width: 300px;
+      text-align: center;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 1.2em;
+      margin: 10px 0;
+      width: 100%;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      background-color: rgba(255, 255, 255, 0.8);
+      color: black;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1.2em;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .error {
+      color: red;
+      font-size: 1.2em;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Code d'accès</h1>
+  <input type="password" id="accessCode" placeholder="Entrez le code d'accès" />
+  <button onclick="checkAccess()">Accéder</button>
+  <div id="error" class="error"></div>
+</div>
+
+<script>
+  const correctCode = "12345"; // Remplacez par le code d'accès que vous souhaitez
+  const errorDiv = document.getElementById("error");
+
+  function checkAccess() {
+    const enteredCode = document.getElementById("accessCode").value;
+
+    if (enteredCode === correctCode) {
+      window.location.href = "index.html"; // Redirige vers votre page principale si le code est correct
+    } else {
+      errorDiv.textContent = "Code d'accès incorrect. Vous allez être redirigé.";
+      setTimeout(() => {
+        window.location.href = "https://www.google.com"; // Redirige l'utilisateur vers un autre site en cas d'erreur
+      }, 3000); // Attends 3 secondes avant de rediriger
+    }
+  }
+</script>
+
+</body>
+</html>

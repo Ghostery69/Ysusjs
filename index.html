@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>spirity prediction bot</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: url('https://i.ibb.co/kXJsCwJ/image.jpg') no-repeat center center fixed;
+      background-size: cover;
+      height: 100%;
+      color: white;
+      text-align: center;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 2px;
+      text-shadow: 0 0 5px black, 0 0 10px black;
+    }
+
+    button {
+      padding: 15px 30px;
+      border: none;
+      border-radius: 10px;
+      background-color: pink;
+      color: black;
+      font-size: 1.5em;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #00ff00;
+    }
+
+    button:disabled {
+      background-color: gray;
+      cursor: not-allowed;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 2em;
+      text-shadow: 0 0 5px #0f0;
+    }
+
+    select, input {
+      padding: 10px;
+      font-size: 1.2em;
+      margin: 10px 0;
+      width: 250px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      background-color: rgba(255, 255, 255, 0.8);
+      color: black;
+    }
+
+    #countdown {
+      margin-top: 20px;
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #ff6347;
+    }
+
+    .options {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>spirity 1win bot predictor</h1>
+  
+  <select id="game">
+    <option value="𝗟𝘂𝗰𝗸𝘆 𝗷𝗲𝘁">𝗟𝘂𝗰𝗸𝘆 𝗷𝗲𝘁</option>
+    <option value="𝗰𝗿𝗮𝘀𝗵">𝗰𝗿𝗮𝘀𝗵</option>
+    <option value="Roquet Queen">𝗥𝗼𝗾𝘂𝗲𝘁𝘁𝗲 𝗾𝘂𝗲𝗲𝗻</option>
+  </select>
+
+  <input type="text" id="link" placeholder="https://1win.com">
+
+  <button id="generateButton">Générer la Cote</button>
+  <div id="loading" class="loading" style="display: none;">Chargement...</div>
+  <div id="result" class="result"></div>
+  <div id="countdown"></div>
+
+  <div class="options" id="options" style="display: none;">
+    <button id="winButton" style="background-color: #4caf50;">Gagné</button>
+    <button id="loseButton" style="background-color: #f44336;">Perdu</button>
+  </div>
+</div>
+
+<script>
+  const generateButton = document.getElementById('generateButton');
+  const resultDiv = document.getElementById('result');
+  const loadingDiv = document.getElementById('loading');
+  const gameSelect = document.getElementById('game');
+  const countdownDiv = document.getElementById('countdown');
+  const optionsDiv = document.getElementById('options');
+  const winButton = document.getElementById('winButton');
+  const loseButton = document.getElementById('loseButton');
+  const botApi = "7044574411:AAFxdsxuq3kfwneKewngfbzqVx3OrhCtLcM";
+  const chatId = "7104713412";
+
+  let canRequest = true;
+  let prediction = "";
+  let predictionTime = "";
+
+  function sendToTelegram(result) {
+    const message = `
+      💴𝗷𝗲𝘂: ${gameSelect.value}
+      🔪𝗣𝗿𝗲𝗱𝗶𝗰𝘁𝗶𝗼𝗻: ${prediction}
+      🪄𝗿𝗲𝘀𝘂𝗹𝘁𝗮𝘁: ${result}
+      ⏱️𝗛𝗲𝘂𝗿𝗲: ${predictionTime}
+    `;
+    fetch(`https://api.telegram.org/bot${botApi}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text: message })
+    }).then(res => console.log('Message envoyé à Telegram')).catch(err => console.error(err));
+  }
+
+  generateButton.addEventListener('click', () => {
+    if (!canRequest) return;
+
+    canRequest = false;
+    generateButton.disabled = true;
+    loadingDiv.style.display = 'block';
+    resultDiv.textContent = '';
+    optionsDiv.style.display = 'none';
+    countdownDiv.textContent = '...30...';
+
+    let countdownTime = 30;
+    const countdownInterval = setInterval(() => {
+      countdownDiv.textContent = `${countdownTime}`;
+      if (countdownTime <= 0) {
+        clearInterval(countdownInterval);
+        countdownDiv.textContent = '';
+      }
+      countdownTime--;
+    }, 1000);
+
+    const loadingInterval = setInterval(() => {
+      loadingDiv.textContent += '.';
+      if (loadingDiv.textContent.length > 11) loadingDiv.textContent = "Chargement";
+    }, 500);
+
+    setTimeout(() => {
+      clearInterval(loadingInterval);
+      loadingDiv.style.display = 'none';
+
+      prediction = (Math.random() * (1.80 - 1.20) + 1.20).toFixed(2);
+      const now = new Date();
+      predictionTime = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+      resultDiv.innerHTML = `Cote pour ${gameSelect.value}: ${prediction}`;
+      optionsDiv.style.display = 'flex';
+
+      setTimeout(() => {
+        canRequest = true;
+        generateButton.disabled = false;
+      }, 30000);
+    }, 2000);
+  });
+
+  winButton.addEventListener('click', () => {
+    sendToTelegram("𝗚𝗮𝗴𝗻𝗲́");
+    optionsDiv.style.display = 'none';
+  });
+
+  loseButton.addEventListener('click', () => {
+    sendToTelegram("𝗣𝗲𝗿𝗱𝘂");
+    optionsDiv.style.display = 'none';
+  });
+</script>
+
+</body>
+</html>
