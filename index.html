@@ -168,7 +168,7 @@
       clearInterval(loadingInterval);
       loadingDiv.style.display = 'none';
 
-      prediction = (Math.random() * (1.80 - 1.20) + 1.20).toFixed(2);
+      prediction = (Math.random() * (1.35 - 1.20) + 1.20).toFixed(2);
       const now = new Date();
       predictionTime = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
       resultDiv.innerHTML = `Cote pour ${gameSelect.value}: ${prediction}`;
